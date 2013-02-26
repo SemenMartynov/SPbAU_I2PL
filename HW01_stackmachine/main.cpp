@@ -19,20 +19,25 @@
 #include <stack>
 
 int calc(const int val1, const int val2, const std::string &op);
-class comparator {
+class comparator
+{
 public:
-	comparator(std::string label) {
+	comparator(std::string label)
+	{
 		this->label = label + ":";
 	}
-	bool operator()(std::string &strForCmp) const {
+	bool operator()(std::string &strForCmp) const
+	{
 		return !label.compare(strForCmp);
 	}
 private:
 	std::string label;
 };
 
-int main(int argc, char **argv) {
-	if (argc != 2) {
+int main(int argc, char **argv)
+{
+	if (argc != 2)
+	{
 		std::cerr << "usage: " << argv[0] << " prog.sm" << std::endl;
 		return EXIT_FAILURE;
 	}
@@ -53,43 +58,61 @@ int main(int argc, char **argv) {
 	std::stack<int> constants;
 
 	for (std::vector<std::string>::const_iterator it = stackMachine.begin();
-			it != stackMachine.end(); ++it) {
+			it != stackMachine.end(); ++it)
+	{
 
-		if ((*it).empty()) {
+		if ((*it).empty())
+		{
 			continue;
-		} else if (!(*it).compare(0, 1, "$")) {
+		}
+		else if (!(*it).compare(0, 1, "$"))
+		{
 			continue;
-		} else if (!(*it).compare("C")) {
+		}
+		else if (!(*it).compare("C"))
+		{
 			/**
 			 * C n - load a constant n on stack peak
 			 */
 			int n;
 			std::istringstream(*++it) >> n;
 			constants.push(n);
-		} else if (!(*it).compare("L")) {
+		}
+		else if (!(*it).compare("L"))
+		{
 			/**
 			 * L x - load value from variable x in to the stack peak
 			 */
 			std::map<std::string, int>::const_iterator x = variables.find(
 					*++it);
-			if (x != variables.end()) {
+			if (x != variables.end())
+			{
 				constants.push(x->second);
-			} else {
+			}
+			else
+			{
 				std::cerr << "Cant't find variable " << *it << std::endl;
 				return EXIT_FAILURE;
 			}
-		} else if (!(*it).compare("S")) {
+		}
+		else if (!(*it).compare("S"))
+		{
 			/**
 			 * S x - load value from the stack peak in to the variable x
 			 */
-			if (constants.size() > 0) {
+			if (constants.size() > 0)
+			{
 				variables[*++it] = constants.top();
 				constants.pop();
-			} else {
+			}
+			else
+			{
 				std::cerr << "Stack is empty" << std::endl;
 				return EXIT_FAILURE;
 			}
-		} else if (!(*it).compare("R")) {
+		}
+		else if (!(*it).compare("R"))
+		{
 			/**
 			 * R - load value from input stream in to the stack peak
 			 */
@@ -97,18 +120,25 @@ int main(int argc, char **argv) {
 			std::cout << "> ";
 			std::cin >> n;
 			constants.push(n);
-		} else if (!(*it).compare("W")) {
+		}
+		else if (!(*it).compare("W"))
+		{
 			/**
 			 * W - load value from the stack peak in to the output stream
 			 */
-			if (constants.size() > 0) {
+			if (constants.size() > 0)
+			{
 				std::cout << constants.top() << std::endl;
 				constants.pop();
-			} else {
+			}
+			else
+			{
 				std::cerr << "Stack is empty" << std::endl;
 				return EXIT_FAILURE;
 			}
-		} else if (!(*it).compare("B")) {
+		}
+		else if (!(*it).compare("B"))
+		{
 			/**
 			 * B
 			 * 1. Take two values from stack peak.
@@ -117,76 +147,100 @@ int main(int argc, char **argv) {
 			 */
 			int val1;
 			int val2;
-			if (constants.size() > 1) {
+			if (constants.size() > 1)
+			{
 				val1 = constants.top();
 				constants.pop();
 				val2 = constants.top();
 				constants.pop();
 				constants.push(calc(val1, val2, *++it));
-			} else {
+			}
+			else
+			{
 				std::cerr << "Stack is empty" << std::endl;
 				return EXIT_FAILURE;
 			}
-		} else if (!(*it).compare("J")) {
+		}
+		else if (!(*it).compare("J"))
+		{
 			/**
 			 * J a - goto label a
 			 */
 			it = std::find_if(stackMachine.begin(), stackMachine.end(),
 					comparator(*++it));
-			if (it == stackMachine.end()) {
+			if (it == stackMachine.end())
+			{
 				std::cerr << "Syntax error - can't find label for J"
 						<< std::endl;
 				return EXIT_FAILURE;
 			}
-		} else if (!(*it).compare("JT")) {
+		}
+		else if (!(*it).compare("JT"))
+		{
 			/**
 			 * JT a - goto label a, if TRUE is on the stack peak
 			 */
 			int b;
-			if (constants.size() > 0) {
+			if (constants.size() > 0)
+			{
 				b = constants.top();
 				constants.pop();
-			} else {
+			}
+			else
+			{
 				std::cerr << "Stack is empty" << std::endl;
 				return EXIT_FAILURE;
 			}
-			if (b) {
+			if (b)
+			{
 				it = std::find_if(stackMachine.begin(), stackMachine.end(),
 						comparator(*++it));
-				if (it == stackMachine.end()) {
+				if (it == stackMachine.end())
+				{
 					std::cerr << "Syntax error - can't find label for JT"
 							<< std::endl;
 					return EXIT_FAILURE;
 				}
 			}
-		} else if (!(*it).compare("JF")) {
+		}
+		else if (!(*it).compare("JF"))
+		{
 			/**
 			 * JF a - goto label a, if FALSE is on the stack peak
 			 */
 			int b;
-			if (constants.size() > 0) {
+			if (constants.size() > 0)
+			{
 				b = constants.top();
 				constants.pop();
-			} else {
+			}
+			else
+			{
 				std::cerr << "Stack is empty" << std::endl;
 				return EXIT_FAILURE;
 			}
-			if (!b) {
+			if (!b)
+			{
 				it = std::find_if(stackMachine.begin(), stackMachine.end(),
 						comparator(*++it));
-				if (it == stackMachine.end()) {
+				if (it == stackMachine.end())
+				{
 					std::cerr << "Syntax error - can't find label for JF"
 							<< std::endl;
 					return EXIT_FAILURE;
 				}
 			}
-		} else if (!(*it).compare("E")) {
+		}
+		else if (!(*it).compare("E"))
+		{
 			/**
 			 * E - end program
 			 */
 			std::cout << "The end." << std::endl;
 			return EXIT_SUCCESS;
-		} else {
+		}
+		else
+		{
 			std::cerr << "Syntax error - can't understand command '" << *it
 					<< "'" << std::endl;
 			return EXIT_FAILURE;
@@ -196,35 +250,63 @@ int main(int argc, char **argv) {
 	return EXIT_FAILURE;
 }
 
-int calc(const int val1, const int val2, const std::string &op) {
+int calc(const int val1, const int val2, const std::string &op)
+{
 	// Execute operation {+ - * / % == != > < >= <= || &&}
-	if (!op.compare("+")) {
+	if (!op.compare("+"))
+	{
 		return (val2 + val1);
-	} else if (!op.compare("-")) {
+	}
+	else if (!op.compare("-"))
+	{
 		return (val2 - val1);
-	} else if (!op.compare("*")) {
+	}
+	else if (!op.compare("*"))
+	{
 		return (val2 * val1);
-	} else if (!op.compare("/")) {
+	}
+	else if (!op.compare("/"))
+	{
 		return (val2 / val1);
-	} else if (!op.compare("%")) {
+	}
+	else if (!op.compare("%"))
+	{
 		return (val2 % val1);
-	} else if (!op.compare("==")) {
+	}
+	else if (!op.compare("=="))
+	{
 		return (val2 == val1);
-	} else if (!op.compare("!=")) {
+	}
+	else if (!op.compare("!="))
+	{
 		return (val2 != val1);
-	} else if (!op.compare(">")) {
+	}
+	else if (!op.compare(">"))
+	{
 		return (val2 > val1);
-	} else if (!op.compare("<")) {
+	}
+	else if (!op.compare("<"))
+	{
 		return (val2 < val1);
-	} else if (!op.compare(">=")) {
+	}
+	else if (!op.compare(">="))
+	{
 		return (val2 >= val1);
-	} else if (!op.compare("<=")) {
+	}
+	else if (!op.compare("<="))
+	{
 		return (val2 <= val1);
-	} else if (!op.compare("||")) {
+	}
+	else if (!op.compare("||"))
+	{
 		return (val2 || val1);
-	} else if (!op.compare("&&")) {
+	}
+	else if (!op.compare("&&"))
+	{
 		return (val2 && val1);
-	} else {
+	}
+	else
+	{
 		std::cerr << "Syntax error - unknown operation" << std::endl;
 		return EXIT_FAILURE;
 	}
