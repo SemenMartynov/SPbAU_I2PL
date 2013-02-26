@@ -68,18 +68,7 @@ int main(int argc, char **argv) {
 			constants.push(n);
 		} else if (!(*it).compare("L")) {
 			/**
-			 * L x - load value from the stack peak in to the variable X
-			 */
-			if (constants.size() > 0) {
-				variables[*++it] = constants.top();
-				constants.pop();
-			} else {
-				std::cerr << "Stack is empty" << std::endl;
-				return EXIT_FAILURE;
-			}
-		} else if (!(*it).compare("S")) {
-			/**
-			 * S x - load value from variable x in to the stack peak
+			 * L x - load value from variable x in to the stack peak
 			 */
 			std::map<std::string, int>::const_iterator x = variables.find(
 					*++it);
@@ -89,11 +78,23 @@ int main(int argc, char **argv) {
 				std::cerr << "Cant't find variable " << *it << std::endl;
 				return EXIT_FAILURE;
 			}
+		} else if (!(*it).compare("S")) {
+			/**
+			 * S x - load value from the stack peak in to the variable x
+			 */
+			if (constants.size() > 0) {
+				variables[*++it] = constants.top();
+				constants.pop();
+			} else {
+				std::cerr << "Stack is empty" << std::endl;
+				return EXIT_FAILURE;
+			}
 		} else if (!(*it).compare("R")) {
 			/**
 			 * R - load value from input stream in to the stack peak
 			 */
 			int n;
+			std::cout << "> ";
 			std::cin >> n;
 			constants.push(n);
 		} else if (!(*it).compare("W")) {
@@ -183,7 +184,7 @@ int main(int argc, char **argv) {
 			/**
 			 * E - end program
 			 */
-			std::cout << "The end." << std::endl << "Stack top is" << constants.top() << std::endl;
+			std::cout << "The end." << std::endl;
 			return EXIT_SUCCESS;
 		} else {
 			std::cerr << "Syntax error - can't understand command '" << *it
