@@ -7,6 +7,7 @@
 
 #ifndef STACKMACHINE_H_
 #define STACKMACHINE_H_
+#include "Exception.h"
 #include "Memory.h"
 #include "Stack.h"
 #include "StackMachineCode.h"
@@ -18,7 +19,6 @@ public:
 			code(codePath)
 	{
 	}
-	;
 	int calc(const int val1, const int val2, const std::string &op);
 	void start();
 private:
@@ -27,7 +27,7 @@ private:
 	Stack<int> stack;
 };
 
-int StackMachine::calc(const int val1, const int val2, const std::string &op)
+inline int StackMachine::calc(const int val1, const int val2, const std::string &op)
 {
 	// Execute operation {+ - * / % == != > < >= <= || &&}
 	if (!op.compare("+"))
@@ -189,6 +189,8 @@ inline void StackMachine::start()
 			std::cout << "The end." << std::endl;
 			isNotEnded = false;
 		}
+			else
+				throw Exception("Syntax error - unknown operation");
 	}
 }
 

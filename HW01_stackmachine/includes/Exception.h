@@ -26,7 +26,6 @@ public:
 	}
 private:
 	std::string message;
-}
-;
+};
 
 #endif /* EXCEPTION_H_ */

@@ -7,12 +7,14 @@
 
 #ifndef STACKMACHINECODE_H_
 #define STACKMACHINECODE_H_
+#include "Exception.h"
+#include <vector>
 #include <memory>
+#include <iostream>
 #include <fstream>
 #include <sstream>
-#include <vector>
-#include <algorithm>
 #include <iterator>
+#include <algorithm>
 
 class StackMachineCode
 {
@@ -40,7 +42,7 @@ private:
 	};
 };
 
-StackMachineCode::StackMachineCode(const char* codePath)
+inline StackMachineCode::StackMachineCode(const char* codePath)
 {
 	// I know that auto_ptr is deprecated, but I have old compiler on my desktop
 	std::string codeFile(
@@ -57,12 +59,12 @@ StackMachineCode::StackMachineCode(const char* codePath)
 	codePointer = code.begin();
 }
 
-bool StackMachineCode::isEOF()
+inline bool StackMachineCode::isEOF()
 {
 	return codePointer == code.end();
 }
 
-std::string StackMachineCode::getCommand()
+inline std::string StackMachineCode::getCommand()
 {
 	if (!isEOF())
 	{
@@ -74,7 +76,7 @@ std::string StackMachineCode::getCommand()
 		throw Exception("Unexpected EOF");
 }
 
-void StackMachineCode::goTo(std::string label)
+inline void StackMachineCode::goTo(std::string label)
 {
 	codePointer = std::find_if(code.begin(), code.end(), comparator(label));
 	if (!isEOF())
