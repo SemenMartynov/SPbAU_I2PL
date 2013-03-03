@@ -4,7 +4,7 @@ OBJS =		main.o
 
 LIBS =
 
-TARGET =	main
+TARGET =	stackmachine
 
 $(TARGET):	$(OBJS)
 	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
